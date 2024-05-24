@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-
+const jwt = require('jsonwebtoken');
 const Account = require('../models/account'); 
+
+const dasecretey = ""
 
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
@@ -13,7 +15,9 @@ router.post('/', async (req, res) => {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        res.json({ username: user.username,});
+        const token = jwt.sign({ id: user._id, username: user.username }, dasecretey)
+        res.json({ username: user.username, token});
+        
     } catch (error) {
 
         console.error('Error authenticating user:', error);
