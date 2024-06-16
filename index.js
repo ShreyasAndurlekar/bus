@@ -4,10 +4,23 @@ const cors = require('cors');
 const accountsRouter = require('./routes/accounts');
 const authRouter = require('./routes/auth');
 require('dotenv').config();
+const rateLimit = require('express-rate-limit');
 
 
 const app = express();
 const port = 5000;
+
+const limiter = rateLimit({
+    windowMs: 5 * 60 * 1000, 
+    max: 10, 
+    message: {
+      status: 429,
+      error: 'Too many requests',
+      message: 'Too many requests from this IP, please try again later.'
+    }
+  });
+  
+app.use(limiter);
 
 app.use(cors());
 app.use(express.json());
