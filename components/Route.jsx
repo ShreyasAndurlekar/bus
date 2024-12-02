@@ -1,7 +1,7 @@
 import { Text, View, ScrollView, Pressable, ActivityIndicator } from "react-native";
 import styles from '../stylesheets/global';
 import BottomBar from "./Bottom";
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useLayoutEffect } from 'react';
 import { BusContext } from "../functions/bus";
 import Bus from "./Bus";
 import calculateTimestamps from "../functions/extra.js";
@@ -11,11 +11,10 @@ import alert from '../components/Alert';
 import { showAlert_ } from "../components/Alert";
 
 const Route = () => {
-    
     const { busStops } = useContext(BusContext);
-    const [ busStop, changeBusStop ] = useState("Pawar Nagar");
-    const [ eta, setETA ] = useState(0)
-    
+    const [busStop, changeBusStop] = useState("Pawar Nagar");
+    const [eta, setETA] = useState(0);
+
     const [busstopcount, setBusstopcount] = useState(0);
     const [arrayOfTimeStamps, setArrayOfTimeStamps] = useState([]);
     const [showAlert, setShowAlert] = useState(false); 
@@ -72,11 +71,12 @@ const Route = () => {
         setLoading(false); 
     };
 
-    useEffect(() => {
-
-        const timer = setTimeout(() => setShowAlert(true), 500);
+    // Trigger the alert after the component is fully rendered using useLayoutEffect
+    useLayoutEffect(() => {
+        const timer = setTimeout(() => {
+            setShowAlert(true); 
+        }, 1000); // Delay to ensure component has rendered
         return () => clearTimeout(timer); 
-        
     }, []);
 
     useEffect(() => {
@@ -93,7 +93,7 @@ const Route = () => {
                         },
                         style: 'default'
                     },
-                    { text: 'No', onPress: () => setShowAlert(false) , style: 'cancel' },
+                    { text: 'No', onPress: () => setShowAlert(false), style: 'cancel' },
                 ]
             );
         }
